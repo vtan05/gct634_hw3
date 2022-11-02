@@ -1,2 +1,2 @@
-# gct634_hw3
+# GCT634 HW3
 Automatic Polyphonic Piano Transcription
