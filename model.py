@@ -150,7 +150,7 @@ class Transcriber_ONF(nn.Module):
 
         self.frame_conv_stack = ConvStack(N_MELS, cnn_unit, fc_unit)
         self.frame_fc = nn.Sequential(
-            nn.Linear(fc_unit, 88)
+            nn.Linear(fc_unit, 88),
             nn.Sigmoid())
 
         self.onset_conv_stack = ConvStack(N_MELS, cnn_unit, fc_unit)
@@ -159,7 +159,7 @@ class Transcriber_ONF(nn.Module):
 
         self.combined_lstm = nn.LSTM(input_size=88*2, hidden_size=88, bidirectional=True, num_layers=2, batch_first=True)
         self.combined_fc = nn.Sequential(
-            nn.Linear(88*2, 88)
+            nn.Linear(88*2, 88),
             nn.Sigmoid())
 
 
