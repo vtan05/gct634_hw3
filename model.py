@@ -149,14 +149,19 @@ class Transcriber_ONF(nn.Module):
         self.melspectrogram = LogMelSpectrogram()
 
         self.frame_conv_stack = ConvStack(N_MELS, cnn_unit, fc_unit)
-        self.frame_fc = nn.Linear(fc_unit, 88)
+        self.frame_fc = nn.Sequential(
+            nn.Linear(fc_unit, 88)
+            nn.Sigmoid())
 
         self.onset_conv_stack = ConvStack(N_MELS, cnn_unit, fc_unit)
         self.onset_lstm = nn.LSTM(input_size=fc_unit, hidden_size=88, bidirectional=True, num_layers=2, batch_first=True)
         self.onset_fc = nn.Linear(88*2, 88)
 
         self.combined_lstm = nn.LSTM(input_size=88*2, hidden_size=88, bidirectional=True, num_layers=2, batch_first=True)
-        self.combined_fc = nn.Linear(88*2, 88)
+        self.combined_fc = nn.Sequential(
+            nn.Linear(88*2, 88)
+            nn.Sigmoid())
+
 
     def forward(self, audio):
         # TODO: Question 3
@@ -168,7 +173,7 @@ class Transcriber_ONF(nn.Module):
 
         x = self.frame_conv_stack(mel)
         x = self.frame_fc(x)
-        x = torch.cat((x.detach(), onset_out.detach()), dim=-1)
+        x = torch.cat((onset_out.detach(), x.detach()), dim=-1)
         x, (h_n, c_n) = self.combined_lstm(x)
         frame_out = self.combined_fc(x)
         return frame_out, onset_out
