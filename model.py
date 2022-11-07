@@ -157,8 +157,9 @@ class Transcriber_ONF(nn.Module):
 
         self.combined_lstm = nn.LSTM(input_size=88*2, hidden_size=88, bidirectional=True, num_layers=2, batch_first=True)
         self.combined_fc = nn.Sequential(
-            nn.Linear(88*2, 88),
-            nn.Sigmoid())
+          nn.Linear(88*2, 88),
+          nn.Sigmoid()
+        )
 
 
     def forward(self, audio):
@@ -167,12 +168,12 @@ class Transcriber_ONF(nn.Module):
 
         x = self.onset_conv_stack(mel)
         x, (h_n, c_n) = self.onset_lstm(x)
-        onset = self.onset_fc(x)
-        onset_out = nn.Sigmoid()(onset)
+        onset_out = self.onset_fc(x)
 
         x = self.frame_conv_stack(mel)
         x = self.frame_fc(x)
-        x = torch.cat((onset.detach(), x.detach()), dim=-1)
+        x = torch.cat((onset_out.detach(), x.detach()), dim=2)
         x, (h_n, c_n) = self.combined_lstm(x)
         frame_out = self.combined_fc(x)
         return frame_out, onset_out
+
