@@ -169,7 +169,7 @@ class Transcriber_ONF(nn.Module):
 
         x = self.frame_conv_stack(mel)
         x = self.frame_fc(x)
-        x = torch.cat((onset_out.detach(), x.detach()), dim=-1)
+        x = torch.cat([onset_out.detach(), x], dim=-1)
         x, (h_n, c_n) = self.combined_lstm(x)
         frame_out = self.combined_fc(x)
         return frame_out, onset_out
