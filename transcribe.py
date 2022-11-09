@@ -13,7 +13,7 @@ from mir_eval.util import midi_to_hz
 
 from constants import HOP_SIZE, MIN_MIDI, SAMPLE_RATE
 from evaluate import extract_notes, save_midi
-from model import Transciber
+from model import *
 
 
 def load_audio(audiofile):
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     with torch.no_grad():
         model_state_path = args.model_file
         ckp = torch.load(model_state_path, map_location='cpu')
-        model = Transciber(ckp['cnn_unit'], ckp['fc_unit'])
+        model = Transcriber(ckp['cnn_unit'], ckp['fc_unit'])
 
         model.load_state_dict(ckp['model_state_dict'])
         model.eval()
